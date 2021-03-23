@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name" translatable="false">Hear Me When You Can Not See Me</string>
+    <string name="no_camera_access">Please grant camera permissions.</string>
+
+    //MainActivity strings
+    <string name="launchMP">Launch Mediapipe</string>
+    <string name="changeLang">Change Language</string>
+    <string name="txtIntro">App intro</string>
+
+    //MenuActivity strings
+    <string name="signDetection">Sign recognition</string>
+    <string name="speakIn">Voice to Text</string>
+    <string name="out_message">Run MP for recognition</string>
+    <string name="speakOut">Text to voice</string>
+    <string name="lblPitch">Pitch</string>
+    <string name="lblSpeed">Speed</string>
+    <string name="hintInput">Type your text in</string>
+
+</resources>

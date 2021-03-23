@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="no_camera_access">Por favor, autorice el acceso a la camara</string>
+    <string name="launchMP">Iniciar el reconocedor de manos</string>
+    <string name="changeLang">Cambiar idioma</string>
+    <string name="out_message">Presiona el boton de Iniciar para obtener el mensaje utilizando el reconocedor de signos</string>
+    <string name="signDetection">Lengua de Signos</string>
+    <string name="txtIntro">Esta App ha sido producida para ayudar a comunicar personas sordo mudas con otras que no entienden la lengua de signos</string>
+    <string name="speakIn">Reconocimiento de Voz</string>
+    <string name="speakOut">Leer en alto</string>
+    <string name="lblPitch">Entonacion</string>
+    <string name="lblSpeed">Velocidad</string>
+    <string name="hintInput">Introduce el texto aqui</string>
+</resources>

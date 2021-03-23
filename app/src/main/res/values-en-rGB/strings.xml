@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="no_camera_access">Please, provide permissions to use the camera</string>
+    <string name="launchMP">Start hand tracker</string>
+    <string name="changeLang">Change language</string>
+    <string name="out_message">Press Sign Recognition  button to translate sign language into text, Voice Recognition button to translate speech into text, or you can write your own text here.</string>
+    <string name="signDetection">Sign recognition</string>
+    <string name="txtIntro">This App has been produced to help deaf-mute people to communicate</string>
+    <string name="speakIn">Voice recognition</string>
+    <string name="speakOut">Read it loud</string>
+    <string name="lblPitch">Pitch tone</string>
+    <string name="lblSpeed">Speed rate</string>
+    <string name="hintInput">Type your text in</string>
+</resources>
