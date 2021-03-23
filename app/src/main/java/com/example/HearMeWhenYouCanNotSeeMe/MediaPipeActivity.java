@@ -117,7 +117,7 @@ public class MediaPipeActivity extends BasicActivity {
      * of MediaPipe.
      *
      * @param multiHandLandmarks
-     * @return
+     * @return the list of points with their respective X, Y and Z positions for each hand recognised
      */
     private String getMultiHandLandmarksDebugString(List<NormalizedLandmarkList> multiHandLandmarks) {
         if (multiHandLandmarks.isEmpty()) {
@@ -151,8 +151,8 @@ public class MediaPipeActivity extends BasicActivity {
      * The handGestureCalculator method takes the different position of the points obtained from
      * MediaPipe in post to return a string that contains the letter for that gesture.
      *
-     * @param multiHandLandmarks
-     * @return
+     * @param multiHandLandmarks array of normalised landmarks points obtained from MediaPipe
+     * @return String value with the letter for a sign
      */
     private String handGestureCalculator(List<NormalizedLandmarkList> multiHandLandmarks) {
         if (multiHandLandmarks.isEmpty()) {
@@ -160,6 +160,8 @@ public class MediaPipeActivity extends BasicActivity {
         }
         String letter = "";
         // Different conditions for each of the finger positions
+        boolean isLeft = false;
+        boolean isRight = false;
         boolean thumbIsOpen = false;
         boolean thumbIsBend = false;
         boolean firstFingerIsOpen = false;
@@ -177,6 +179,11 @@ public class MediaPipeActivity extends BasicActivity {
             Log.d("Foot", "" + landmarkList.get(0).getY() + " " + landmarkList.get(1).getY() + " " + landmarkList.get(20).getY());
 
             float pseudoFixKeyPoint = landmarkList.get(2).getX();
+            if(pseudoFixKeyPoint >= landmarkList.get(17).getX()) {
+                isLeft = true;
+            }else if (pseudoFixKeyPoint <= landmarkList.get(17).getX()) {
+                isRight = true;
+            }
             if (pseudoFixKeyPoint < landmarkList.get(9).getX()) {
                 if (landmarkList.get(3).getX() < pseudoFixKeyPoint &&
                         landmarkList.get(4).getX() < pseudoFixKeyPoint) {
@@ -252,6 +259,10 @@ public class MediaPipeActivity extends BasicActivity {
             else if(!thumbIsOpen &&
                     secondFingerIsOpen && thirdFingerIsOpen && fourthFingerIsOpen)
                 return "B";
+            else if(isLeft)
+                return  "Left Hand";
+            else if(isRight)
+                return  "Right Hand";
             else if(firstFingerIsOpen)
                 return  "1st open";
             else if(firstFingerIsClose)
@@ -427,7 +438,7 @@ public class MediaPipeActivity extends BasicActivity {
      * This method takes the letter obtained on the sign, and it gets added into the actual
      * sentence on the result view.
      *
-     * @param letter
+     * @param letter String value for the letter obtained from the gesture recognition
      */
     private void addToSentence(String letter){
         sentence = result.getText().toString();
@@ -440,14 +451,39 @@ public class MediaPipeActivity extends BasicActivity {
         return distance < 0.1;
     }
 
+    /**
+     * The following method calculates the distance between 2 points (A and B) using euclidean distance
+     * formula.
+     *
+     * @param a_x Value of X for the given position of point A
+     * @param a_y Value of Y for the given position of point A
+     * @param b_x Value of X for the given position of point B
+     * @param b_y Value of Y for the given position of point B
+     * @return Euclidean distance result
+     */
     private double getEuclideanDistanceAB(double a_x, double a_y, double b_x, double b_y) {
         double dist = Math.pow(a_x - b_x, 2) + Math.pow(a_y - b_y, 2);
         return Math.sqrt(dist);
     }
 
+    /**
+     * This method calculates the angle between 3 given points (A,B,C) using the angle between vectors
+     * formula. The vector 1 is made with points AB and vector 2 is made with points BC, being point B
+     * the vertex.
+     *
+     * @param a_x Value of X for the given position of A
+     * @param a_y Value of Y for the given position of A
+     * @param b_x Value of X for the given position of B
+     * @param b_y Value of Y for the given position of B
+     * @param c_x Value of X for the given position of C
+     * @param c_y Value of Y for the given position of C
+     * @return Angle result in radians
+     */
     private double getAngleABC(double a_x, double a_y, double b_x, double b_y, double c_x, double c_y) {
+        //Vector 1
         double ab_x = b_x - a_x;
         double ab_y = b_y - a_y;
+        //Vector 2
         double cb_x = b_x - c_x;
         double cb_y = b_y - c_y;
 
@@ -457,6 +493,11 @@ public class MediaPipeActivity extends BasicActivity {
         return Math.atan2(cross, dot);
     }
 
+    /**
+     * Method to convert radian to degree results obtained from the getAngleABC method
+     * @param radian Value of radians to convert
+     * @return Angle in degrees
+     */
     private int radianToDegree(double radian) {
         return (int) Math.floor(radian * 180. / Math.PI + 0.5);
     }
