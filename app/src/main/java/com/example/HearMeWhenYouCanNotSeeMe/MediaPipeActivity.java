@@ -162,13 +162,17 @@ public class MediaPipeActivity extends BasicActivity {
         // Different conditions for each of the finger positions
         boolean isLeft = false;
         boolean isRight = false;
+        boolean indexStraightUp = false;
+        boolean indexStraightDown = false;
+        boolean middleStraightUp = false;
+        boolean middleStraightDown = false;
+        boolean ringStraightUp = false;
+        boolean ringStraightDown = false;
+        boolean pinkyStraightUp = false;
+        boolean pinkyStraightDown = false;
         boolean thumbIsOpen = false;
         boolean thumbIsBend = false;
         boolean firstFingerIsOpen = false;
-        boolean firstFingerIsHalfOpen = false;
-        boolean firstFingerIsClose = false;
-        boolean firstFingerIsDown = false;
-        boolean firstFingerIsCurver = false;
         boolean secondFingerIsOpen = false;
         boolean thirdFingerIsOpen = false;
         boolean fourthFingerIsOpen = false;
@@ -176,115 +180,113 @@ public class MediaPipeActivity extends BasicActivity {
         for (NormalizedLandmarkList landmarks : multiHandLandmarks) {
             List<NormalizedLandmark> landmarkList = landmarks.getLandmarkList();
 
-            Log.d("Foot", "" + landmarkList.get(0).getY() + " " + landmarkList.get(1).getY() + " " + landmarkList.get(20).getY());
+            //Logging to the console the X-axis points that make the base of the palm and do not move like the ones on the fingers
+            Log.d("Palm base", "" + landmarkList.get(0).getX() + " " + landmarkList.get(1).getX() + " " + landmarkList.get(2).getX() + " " + landmarkList.get(17).getX());
+            //Logging to the console the Y-axis points that make the base of the palm and do not move like the ones on the fingers
+            Log.d("Palm base", "" + landmarkList.get(0).getY() + " " + landmarkList.get(1).getY() + " " + landmarkList.get(2).getY() + " " + landmarkList.get(17).getY());
 
+            /*The parameter pseudoFixKeyPoint will help me to set a point of reference used to verify
+             the different conditions for the position of the hand and the fingers.*/
             float pseudoFixKeyPoint = landmarkList.get(2).getX();
-            if(pseudoFixKeyPoint >= landmarkList.get(17).getX()) {
+
+            /*1st CONDITION
+            * Check if hand used is right or left based on the position of the base of the thumb,
+            * if the join number 2 is bigger than the join 17 (base of the pinky finger) on the
+            * X-axis, the hand used is left, otherwise is right*/
+            if(pseudoFixKeyPoint > landmarkList.get(17).getX()) {
                 isLeft = true;
-            }else if (pseudoFixKeyPoint <= landmarkList.get(17).getX()) {
+            }else if (pseudoFixKeyPoint < landmarkList.get(17).getX()) {
                 isRight = true;
             }
-            if (pseudoFixKeyPoint < landmarkList.get(9).getX()) {
-                if (landmarkList.get(3).getX() < pseudoFixKeyPoint &&
-                        landmarkList.get(4).getX() < pseudoFixKeyPoint) {
-                    thumbIsOpen = true;
-                }
-            }
-            if (pseudoFixKeyPoint > landmarkList.get(9).getX()) {
-                if (landmarkList.get(3).getX() >= pseudoFixKeyPoint &&
-                        landmarkList.get(4).getX() > pseudoFixKeyPoint &&
-                        landmarkList.get(4).getX() <= landmarkList.get(3).getX()) {
-                    thumbIsOpen = true;
-                }
-            }
-            if (pseudoFixKeyPoint>landmarkList.get(9).getX()) {
-                if (landmarkList.get(3).getX() >= pseudoFixKeyPoint &&
-                        landmarkList.get(4).getX() > pseudoFixKeyPoint &&
-                        landmarkList.get(4).getX() > landmarkList.get(3).getX()){
-                    thumbIsBend = true;
-                }
-            }
-
             Log.d(TAG, "pseudoFixKeyPoint == " + pseudoFixKeyPoint + "\nlandmarkList.get(2).getX() == " + landmarkList.get(2).getX()
-                    + "\nlandmarkList.get(4).getX() = " + landmarkList.get(4).getX());
-            //Different possible positions for the first finger.
-            pseudoFixKeyPoint = landmarkList.get(6).getY();
-            if (landmarkList.get(7).getY() < pseudoFixKeyPoint &&
-                    landmarkList.get(8).getY() < landmarkList.get(7).getY()) {
-                firstFingerIsOpen = true;
+                    + "\nlandmarkList.get(17).getX() = " + landmarkList.get(17).getX());
+
+            /*2nd CONDITION
+            * To identify when a finger is straight up or straight down.
+            * Each of the following conditions allowed me to create the state straightUp on each finger.
+            * INDEX_FINGER */
+            if (landmarkList.get(8).getY() < landmarkList.get(7).getY()
+                    && landmarkList.get(7).getY() < landmarkList.get(6).getY()
+                    && landmarkList.get(6).getY() < landmarkList.get(5).getY()){
+                indexStraightUp = true;
+            }else if (landmarkList.get(8).getY() >= landmarkList.get(7).getY()
+                    && landmarkList.get(7).getY() >= landmarkList.get(6).getY()
+                    && landmarkList.get(6).getY() >= landmarkList.get(5).getY()){
+                indexStraightDown = true;
             }
-            if (landmarkList.get(7).getY() >= pseudoFixKeyPoint &&
-                    landmarkList.get(7).getY() <= landmarkList.get(5).getY()) {
-                firstFingerIsHalfOpen = true;
+            /*MIDDLE_FINGER */
+            if (landmarkList.get(12).getY() < landmarkList.get(11).getY()
+                    && landmarkList.get(11).getY() < landmarkList.get(10).getY()
+                    && landmarkList.get(10).getY() < landmarkList.get(9).getY()){
+                middleStraightUp = true;
+            }else if (landmarkList.get(12).getY() > landmarkList.get(10).getY()
+                    && landmarkList.get(11).getY() > landmarkList.get(10).getY()
+                    && landmarkList.get(10).getY() >= landmarkList.get(9).getY()){
+                middleStraightDown = true;
             }
-            if (landmarkList.get(7).getY() >= landmarkList.get(5).getY() &&
-                    landmarkList.get(8).getY() < landmarkList.get(2).getY()) {
-                firstFingerIsClose = true;
+            /*RING_FINGER */
+            if (landmarkList.get(16).getY() < landmarkList.get(15).getY()
+                    && landmarkList.get(15).getY() < landmarkList.get(14).getY()
+                    && landmarkList.get(14).getY() < landmarkList.get(13).getY()){
+                ringStraightUp = true;
+            } else if (landmarkList.get(16).getY() > landmarkList.get(14).getY()
+                    && landmarkList.get(15).getY() > landmarkList.get(14).getY()
+                    && landmarkList.get(14).getY() >= landmarkList.get(13).getY()){
+                ringStraightDown = true;
             }
-            if (landmarkList.get(7).getY() > landmarkList.get(5).getY() &&
-                    landmarkList.get(8).getY() >= landmarkList.get(2).getY()) {
-                firstFingerIsDown = true;
+            /*PINKY_FINGER */
+            if (landmarkList.get(20).getY() < landmarkList.get(19).getY()
+                    && landmarkList.get(19).getY() < landmarkList.get(18).getY()
+                    && landmarkList.get(18).getY() < landmarkList.get(17).getY()){
+                pinkyStraightUp = true;
+            } else if (landmarkList.get(20).getY() > landmarkList.get(18).getY()
+                    && landmarkList.get(19).getY() > landmarkList.get(18).getY()
+                    && landmarkList.get(18).getY() >= landmarkList.get(17).getY()){
+                pinkyStraightDown = true;
             }
-            if (landmarkList.get(8).getX() >= landmarkList.get(7).getX() &&
-                    landmarkList.get(7).getX() > landmarkList.get(6).getX() &&
-                    pseudoFixKeyPoint < landmarkList.get(8).getY()) {
-                firstFingerIsCurver = true;
+            /*THUMB */
+            pseudoFixKeyPoint = landmarkList.get(4).getX();
+            if (getEuclideanDistanceAB(pseudoFixKeyPoint,landmarkList.get(4).getY(), landmarkList.get(9).getX(), landmarkList.get(9).getY()) <=
+            getEuclideanDistanceAB(pseudoFixKeyPoint,landmarkList.get(4).getY(), landmarkList.get(2).getX(), landmarkList.get(2).getY())){
+                thumbIsBend = true;
+            }else {
+                thumbIsOpen = true;
             }
 
-            //Different possible positions for the second finger.
-            pseudoFixKeyPoint = landmarkList.get(10).getY();
-            if (landmarkList.get(11).getY() < pseudoFixKeyPoint &&
-                    landmarkList.get(12).getY() < landmarkList.get(11).getY()) {
-                secondFingerIsOpen = true;
-            }
-            /*if (landmarkList.get(11).getY() < pseudoFixKeyPoint &&
-                landmarkList.get(12).getY()
-            )*/
-            pseudoFixKeyPoint = landmarkList.get(14).getY();
-            if (landmarkList.get(15).getY() < pseudoFixKeyPoint && landmarkList.get(16).getY() < landmarkList.get(15).getY()) {
-                thirdFingerIsOpen = true;
-            }
-            pseudoFixKeyPoint = landmarkList.get(18).getY();
-            if (landmarkList.get(19).getY() < pseudoFixKeyPoint && landmarkList.get(20).getY() < landmarkList.get(19).getY()) {
-                fourthFingerIsOpen = true;
-            }
+            /*3rd CONDITION
+            * Setting state position when a finger is completely straight open*/
+
 
             // Hand gesture recognition conditions for each letter
+            if (isRight){
+                if (thumbIsBend){
+                    return "thumb is bend";
+                }
+                else if (thumbIsOpen){
+                    return "thumb is open";
+                }
+                // The following conditions set the positions for each finger to conform the different letters of the alphabet
+                /*else if (!firstFingerIsOpen && !secondFingerIsOpen && !thirdFingerIsOpen &&
+                        !fourthFingerIsOpen && thumbIsOpen){
+                    return "A";
+                }
+                //Letter B needs correction
+                else if(!thumbIsOpen &&
+                        secondFingerIsOpen && thirdFingerIsOpen && fourthFingerIsOpen)
+                    return "B";*/
 
-            if (!firstFingerIsOpen && !secondFingerIsOpen && !thirdFingerIsOpen &&
-                    !fourthFingerIsOpen && thumbIsOpen){
-                return "A";
-            }
-            //Letter B needs correction
-            else if(!thumbIsOpen &&
-                    secondFingerIsOpen && thirdFingerIsOpen && fourthFingerIsOpen)
-                return "B";
-            else if(isLeft)
-                return  "Left Hand";
-            else if(isRight)
-                return  "Right Hand";
-            else if(firstFingerIsOpen)
-                return  "1st open";
-            else if(firstFingerIsClose)
-                return  "1st Close";
-            else if(firstFingerIsCurver)
-                return  "1st curved";
-            else if(firstFingerIsDown)
-                return  "1st down";
-            else if(firstFingerIsHalfOpen)
-                return  "1st half";
             /*else if(thumbIsBend && firstFingerIsOpen && secondFingerIsOpen &&
                     thirdFingerIsOpen && fourthFingerIsOpen)
                 return "C";
             else if()
                 return "D";*/
-            else if(!firstFingerIsOpen && !secondFingerIsOpen && !thirdFingerIsOpen &&
-                    !fourthFingerIsOpen && !thumbIsOpen &&
-                    landmarkList.get(12).getY() <= landmarkList.get(9).getY())
-                return "E";
-            else if(fourthFingerIsOpen && thirdFingerIsOpen && secondFingerIsOpen &&
-                    landmarkList.get(20).getY() == landmarkList.get(4).getY())
-                return "F";/*
+                else if(!firstFingerIsOpen && !secondFingerIsOpen && !thirdFingerIsOpen &&
+                        !fourthFingerIsOpen && !thumbIsOpen &&
+                        landmarkList.get(12).getY() <= landmarkList.get(9).getY())
+                    return "E";
+                else if(fourthFingerIsOpen && thirdFingerIsOpen && secondFingerIsOpen &&
+                        landmarkList.get(20).getY() == landmarkList.get(4).getY())
+                    return "F";/*
             else if()
                 return "G";
             else if()
@@ -309,10 +311,10 @@ public class MediaPipeActivity extends BasicActivity {
                 return "Q";
             else if()
                 return "R";*/
-            else if(!firstFingerIsOpen && !secondFingerIsOpen && !thirdFingerIsOpen &&
-                    !fourthFingerIsOpen && !thumbIsOpen &&
-                    landmarkList.get(4).getX() >= landmarkList.get(5).getX())
-                return "S";
+                else if(!firstFingerIsOpen && !secondFingerIsOpen && !thirdFingerIsOpen &&
+                        !fourthFingerIsOpen && !thumbIsOpen &&
+                        landmarkList.get(4).getX() >= landmarkList.get(5).getX())
+                    return "S";
             /*else if()
                 return "T";
             else if()
@@ -329,110 +331,80 @@ public class MediaPipeActivity extends BasicActivity {
                 return "Z";
             else if()
                 return "SPACE";*/
+            }else if (isLeft){
+                /*if (){
+                    return "A";
+                }
+                //Letter B needs correction
+                else if(!thumbIsOpen &&
+                        secondFingerIsOpen && thirdFingerIsOpen && fourthFingerIsOpen)
+                    return "B";
+            else if(thumbIsBend && firstFingerIsOpen && secondFingerIsOpen &&
+                    thirdFingerIsOpen && fourthFingerIsOpen)
+                return "C";
+            else if()
+                return "D";
+                else if(!firstFingerIsOpen && !secondFingerIsOpen && !thirdFingerIsOpen &&
+                        !fourthFingerIsOpen && !thumbIsOpen &&
+                        landmarkList.get(12).getY() <= landmarkList.get(9).getY())
+                    return "E";
+                else if(fourthFingerIsOpen && thirdFingerIsOpen && secondFingerIsOpen &&
+                        landmarkList.get(20).getY() == landmarkList.get(4).getY())
+                    return "F";
+            else if()
+                return "G";
+            else if()
+                return "H";
+            else if()
+                return "I";
+            else if()
+                return "J";
+            else if()
+                return "K";
+            else if()
+                return "L";
+            else if()
+                return "M";
+            else if()
+                return "N";
+            else if()
+                return "O";
+            else if()
+                return "P";
+            else if()
+                return "Q";
+            else if()
+                return "R";
+            else if()
+                return "S";
+            else if()
+                return "T";
+            else if()
+                return "U";
+            else if()
+                return "V";
+            else if()
+                return "W";
+            else if()
+                return "X";
+            else if()
+                return "Y";
+            else if()
+                return "Z";
+            else if()
+                return "SPACE";*/
+            }
+
             else {
                 String info = "thumbIsOpen " + thumbIsOpen + "firstFingerIsOpen" + firstFingerIsOpen
                         + "secondFingerIsOpen" + secondFingerIsOpen +
                         "thirdFingerIsOpen" + thirdFingerIsOpen + "fourthFingerIsOpen" + fourthFingerIsOpen;
                 Log.d(TAG, "handGestureCalculator: == " + info);
-                return "___";
+                return "no gesture";
             }
         }
         return "___";
     }
-
-    /* To allow movement for the points
-
-    float previousXCenter;
-    float previousYCenter;
-    float previousAngle; // angle between the hand and the x-axis. in radian
-    float previous_rectangle_width;
-    float previousRectangleHeight;
-    boolean frameCounter;
-
-    private String handGestureMoveCalculator(List<RectProto.NormalizedRect> normalizedRectList) {
-
-        RectProto.NormalizedRect normalizedRect = normalizedRectList.get(0);
-        float height = normalizedRect.getHeight();
-        float centerX = normalizedRect.getXCenter();
-        float centerY = normalizedRect.getYCenter();
-        if (previousXCenter != 0) {
-            double mouvementDistance = getEuclideanDistanceAB(centerX, centerY,
-                    previousXCenter, previousYCenter);
-            // LOG(INFO) << "Distance: " << mouvementDistance;
-
-            double mouvementDistanceFactor = 0.02; // only large mouvements will be recognized.
-
-            // the height is normed [0.0, 1.0] to the camera window height.
-            // so the mouvement (when the hand is near the camera) should be equivalent to the mouvement when the hand is far.
-            double mouvementDistanceThreshold = mouvementDistanceFactor * height;
-            if (mouvementDistance > mouvementDistanceThreshold) {
-                double angle = radianToDegree(getAngleABC(centerX, centerY,
-                        previousXCenter, previousYCenter, previousXCenter + 0.1,
-                        previousYCenter));
-                // LOG(INFO) << "Angle: " << angle;
-                if (angle >= -45 && angle < 45) {
-                    return "Scrolling right";
-                } else if (angle >= 45 && angle < 135) {
-                    return "Scrolling up";
-                } else if (angle >= 135 || angle < -135) {
-                    return "Scrolling left";
-                } else if (angle >= -135 && angle < -45) {
-                    return "Scrolling down";
-                }
-            }
-        }
-
-        previousXCenter = centerX;
-        previousYCenter = centerY;
-        // 2. FEATURE - Zoom in/out
-        if (previousRectangleHeight != 0) {
-            double heightDifferenceFactor = 0.03;
-
-            // the height is normed [0.0, 1.0] to the camera window height.
-            // so the mouvement (when the hand is near the camera) should be equivalent to the mouvement when the hand is far.
-            double heightDifferenceThreshold = height * heightDifferenceFactor;
-            if (height < previousRectangleHeight - heightDifferenceThreshold) {
-                return "Zoom out";
-            } else if (height > previousRectangleHeight + heightDifferenceThreshold) {
-                return "Zoom in";
-            }
-        }
-        previousRectangleHeight = height;
-        // each odd Frame is skipped. For a better result.
-        frameCounter = !frameCounter;
-        if (frameCounter && multiHandLandmarks != null) {
-
-            for (NormalizedLandmarkList landmarks : multiHandLandmarks) {
-
-                List<NormalizedLandmark> landmarkList = landmarks.getLandmarkList();
-                NormalizedLandmark wrist = landmarkList.get(0);
-                NormalizedLandmark MCP_of_second_finger = landmarkList.get(9);
-
-                // angle between the hand (wirst and MCP) and the x-axis.
-                double ang_in_radian =
-                        getAngleABC(MCP_of_second_finger.getX(), MCP_of_second_finger.getY(),
-                                wrist.getX(), wrist.getY(), wrist.getX() + 0.1, wrist.getY());
-                int ang_in_degree = radianToDegree(ang_in_radian);
-                // LOG(INFO) << "Angle: " << ang_in_degree;
-                if (previousAngle != 0) {
-                    double angleDifferenceTreshold = 12;
-                    if (previousAngle >= 80 && previousAngle <= 100) {
-                        if (ang_in_degree > previousAngle + angleDifferenceTreshold) {
-                            return "Slide left";
-
-                        } else if (ang_in_degree < previousAngle - angleDifferenceTreshold) {
-                            return "Slide right";
-
-                        }
-                    }
-                }
-                previousAngle = ang_in_degree;
-            }
-
-        }
-        return "";
-    }
-     */
 
     /**
      * This method takes the letter obtained on the sign, and it gets added into the actual
@@ -446,7 +418,7 @@ public class MediaPipeActivity extends BasicActivity {
         result.setText(sentence);
     }
 
-    private boolean isThumbNearFirstFinger(LandmarkProto.NormalizedLandmark point1, LandmarkProto.NormalizedLandmark point2) {
+    private boolean arePointsNear(LandmarkProto.NormalizedLandmark point1, LandmarkProto.NormalizedLandmark point2) {
         double distance = getEuclideanDistanceAB(point1.getX(), point1.getY(), point2.getX(), point2.getY());
         return distance < 0.1;
     }
@@ -477,13 +449,13 @@ public class MediaPipeActivity extends BasicActivity {
      * @param b_y Value of Y for the given position of B
      * @param c_x Value of X for the given position of C
      * @param c_y Value of Y for the given position of C
-     * @return Angle result in radians
+     * @return Angle in radians
      */
     private double getAngleABC(double a_x, double a_y, double b_x, double b_y, double c_x, double c_y) {
-        //Vector 1
+        //Vector 1 (AB)
         double ab_x = b_x - a_x;
         double ab_y = b_y - a_y;
-        //Vector 2
+        //Vector 2 (CB)
         double cb_x = b_x - c_x;
         double cb_y = b_y - c_y;
 
