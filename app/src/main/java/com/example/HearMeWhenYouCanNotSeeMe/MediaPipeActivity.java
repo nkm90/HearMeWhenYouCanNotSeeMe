@@ -290,17 +290,6 @@ public class MediaPipeActivity extends BasicActivity {
                 //else if (thumbIsBend && )
 
             /*
-                else if(!firstFingerIsOpen && !secondFingerIsOpen && !thirdFingerIsOpen &&
-                        !fourthFingerIsOpen && !thumbIsOpen &&
-                        landmarkList.get(12).getY() <= landmarkList.get(9).getY())
-                    return "E";
-                else if(fourthFingerIsOpen && thirdFingerIsOpen && secondFingerIsOpen &&
-                        landmarkList.get(20).getY() == landmarkList.get(4).getY())
-                    return "F";
-            else if()
-                return "G";
-            else if()
-                return "H";
             else if()
                 return "I";
             else if()
