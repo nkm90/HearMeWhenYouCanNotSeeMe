@@ -84,7 +84,7 @@ public class MediaPipeActivity extends BasicActivity {
                         public void run() {
                             String letter = handGestureCalculator(multiHandLandmarks);
                             gesture.setText(letter);
-                            if (timestamp + 2000 < System.currentTimeMillis() && !letter.equals("No hand detected")){
+                            if (timestamp + 2000 < System.currentTimeMillis() && !letter.equals("No hand detected") && !letter.equals("no gesture")){
                                 addToSentence(letter);
                                 timestamp = System.currentTimeMillis();
                             }
@@ -172,10 +172,6 @@ public class MediaPipeActivity extends BasicActivity {
         boolean pinkyStraightDown = false;
         boolean thumbIsOpen = false;
         boolean thumbIsBend = false;
-        boolean firstFingerIsOpen = false;
-        boolean secondFingerIsOpen = false;
-        boolean thirdFingerIsOpen = false;
-        boolean fourthFingerIsOpen = false;
 
         for (NormalizedLandmarkList landmarks : multiHandLandmarks) {
             List<NormalizedLandmark> landmarkList = landmarks.getLandmarkList();
@@ -209,9 +205,8 @@ public class MediaPipeActivity extends BasicActivity {
                     && landmarkList.get(7).getY() < landmarkList.get(6).getY()
                     && landmarkList.get(6).getY() < landmarkList.get(5).getY()){
                 indexStraightUp = true;
-            }else if (landmarkList.get(8).getY() >= landmarkList.get(7).getY()
-                    && landmarkList.get(7).getY() >= landmarkList.get(6).getY()
-                    && landmarkList.get(6).getY() >= landmarkList.get(5).getY()){
+            }else if (getEuclideanDistanceAB(landmarkList.get(8).getX(),landmarkList.get(8).getY(), landmarkList.get(0).getX(), landmarkList.get(0).getY()) <
+                    getEuclideanDistanceAB(landmarkList.get(5).getX(),landmarkList.get(5).getY(), landmarkList.get(0).getX(), landmarkList.get(0).getY())){
                 indexStraightDown = true;
             }
             /*MIDDLE_FINGER */
@@ -219,9 +214,8 @@ public class MediaPipeActivity extends BasicActivity {
                     && landmarkList.get(11).getY() < landmarkList.get(10).getY()
                     && landmarkList.get(10).getY() < landmarkList.get(9).getY()){
                 middleStraightUp = true;
-            }else if (landmarkList.get(12).getY() > landmarkList.get(10).getY()
-                    && landmarkList.get(11).getY() > landmarkList.get(10).getY()
-                    && landmarkList.get(10).getY() >= landmarkList.get(9).getY()){
+            }else if (getEuclideanDistanceAB(landmarkList.get(12).getX(),landmarkList.get(12).getY(), landmarkList.get(0).getX(), landmarkList.get(0).getY()) <
+                    getEuclideanDistanceAB(landmarkList.get(9).getX(),landmarkList.get(9).getY(), landmarkList.get(0).getX(), landmarkList.get(0).getY())){
                 middleStraightDown = true;
             }
             /*RING_FINGER */
@@ -229,9 +223,8 @@ public class MediaPipeActivity extends BasicActivity {
                     && landmarkList.get(15).getY() < landmarkList.get(14).getY()
                     && landmarkList.get(14).getY() < landmarkList.get(13).getY()){
                 ringStraightUp = true;
-            } else if (landmarkList.get(16).getY() > landmarkList.get(14).getY()
-                    && landmarkList.get(15).getY() > landmarkList.get(14).getY()
-                    && landmarkList.get(14).getY() >= landmarkList.get(13).getY()){
+            } else if (getEuclideanDistanceAB(landmarkList.get(16).getX(),landmarkList.get(16).getY(), landmarkList.get(0).getX(), landmarkList.get(0).getY()) <
+                    getEuclideanDistanceAB(landmarkList.get(13).getX(),landmarkList.get(13).getY(), landmarkList.get(0).getX(), landmarkList.get(0).getY())){
                 ringStraightDown = true;
             }
             /*PINKY_FINGER */
@@ -239,9 +232,8 @@ public class MediaPipeActivity extends BasicActivity {
                     && landmarkList.get(19).getY() < landmarkList.get(18).getY()
                     && landmarkList.get(18).getY() < landmarkList.get(17).getY()){
                 pinkyStraightUp = true;
-            } else if (landmarkList.get(20).getY() > landmarkList.get(18).getY()
-                    && landmarkList.get(19).getY() > landmarkList.get(18).getY()
-                    && landmarkList.get(18).getY() >= landmarkList.get(17).getY()){
+            } else if (getEuclideanDistanceAB(landmarkList.get(20).getX(),landmarkList.get(20).getY(), landmarkList.get(0).getX(), landmarkList.get(0).getY()) <
+                    getEuclideanDistanceAB(landmarkList.get(17).getX(),landmarkList.get(17).getY(), landmarkList.get(0).getX(), landmarkList.get(0).getY())){
                 pinkyStraightDown = true;
             }
             /*THUMB */
@@ -259,34 +251,52 @@ public class MediaPipeActivity extends BasicActivity {
 
             // Hand gesture recognition conditions for each letter
             if (isRight){
-                if (thumbIsBend){
-                    return "thumb is bend";
-                }
-                else if (thumbIsOpen){
-                    return "thumb is open";
-                }
-                // The following conditions set the positions for each finger to conform the different letters of the alphabet
-                /*else if (!firstFingerIsOpen && !secondFingerIsOpen && !thirdFingerIsOpen &&
-                        !fourthFingerIsOpen && thumbIsOpen){
+                if (indexStraightDown && middleStraightDown && ringStraightDown && pinkyStraightDown && thumbIsOpen){
                     return "A";
                 }
-                //Letter B needs correction
-                else if(!thumbIsOpen &&
-                        secondFingerIsOpen && thirdFingerIsOpen && fourthFingerIsOpen)
-                    return "B";*/
+                else if(thumbIsBend &&
+                        indexStraightUp && middleStraightUp && ringStraightUp && pinkyStraightUp)
+                    return "B";
+                else if (thumbIsOpen && landmarkList.get(8).getX() <= landmarkList.get(4).getX() &&
+                        arePointsNear(landmarkList.get(8), landmarkList.get(12)) &&
+                        arePointsNear(landmarkList.get(12), landmarkList.get(16)) &&
+                        arePointsNear(landmarkList.get(16), landmarkList.get(20)) && !indexStraightUp)
+                    return "C";
+                else if (indexStraightUp && thumbIsOpen &&
+                        landmarkList.get(12).getX() <= landmarkList.get(4).getX() &&
+                        arePointsNear(landmarkList.get(12), landmarkList.get(4)) &&
+                        arePointsNear(landmarkList.get(12), landmarkList.get(16)) &&
+                        arePointsNear(landmarkList.get(12), landmarkList.get(20)))
+                    return "D";
+                else if (thumbIsBend && landmarkList.get(8).getY() < landmarkList.get(4).getY() &&
+                        landmarkList.get(12).getY() < landmarkList.get(4).getY() &&
+                        landmarkList.get(16).getY() < landmarkList.get(4).getY() &&
+                        landmarkList.get(20).getY() < landmarkList.get(4).getY() &&
+                        landmarkList.get(8).getY() >= landmarkList.get(5).getY() &&
+                        landmarkList.get(12).getY() >= landmarkList.get(9).getY() &&
+                        landmarkList.get(16).getY() >= landmarkList.get(13).getY() &&
+                        landmarkList.get(20).getY() >= landmarkList.get(17).getY())
+                    return "E";//Needs correction
+                else if (middleStraightUp && ringStraightUp && pinkyStraightUp && thumbIsOpen &&
+                        !indexStraightUp && arePointsNear(landmarkList.get(8), landmarkList.get(4)))
+                    return "F";
+                else if (thumbIsOpen && indexStraightUp && middleStraightDown && ringStraightDown &&
+                        pinkyStraightDown && landmarkList.get(8).getX() >= landmarkList.get(13).getX())
+                    return "G"; //Needs a bit more correction as the thumb needs to be close to index
+                else if (thumbIsBend && ringStraightDown && pinkyStraightDown && indexStraightUp &&
+                        middleStraightUp && getEuclideanDistanceAB(landmarkList.get(8).getX(), landmarkList.get(8).getY(), landmarkList.get(12).getX(), landmarkList.get(12).getY()) ==
+                        getEuclideanDistanceAB(landmarkList.get(6).getX(), landmarkList.get(6).getY(), landmarkList.get(10).getX(), landmarkList.get(10).getY()))
+                    return "H";//Not working
+                //else if (thumbIsBend && )
 
-            /*else if(thumbIsBend && firstFingerIsOpen && secondFingerIsOpen &&
-                    thirdFingerIsOpen && fourthFingerIsOpen)
-                return "C";
-            else if()
-                return "D";*/
+            /*
                 else if(!firstFingerIsOpen && !secondFingerIsOpen && !thirdFingerIsOpen &&
                         !fourthFingerIsOpen && !thumbIsOpen &&
                         landmarkList.get(12).getY() <= landmarkList.get(9).getY())
                     return "E";
                 else if(fourthFingerIsOpen && thirdFingerIsOpen && secondFingerIsOpen &&
                         landmarkList.get(20).getY() == landmarkList.get(4).getY())
-                    return "F";/*
+                    return "F";
             else if()
                 return "G";
             else if()
@@ -310,12 +320,10 @@ public class MediaPipeActivity extends BasicActivity {
             else if()
                 return "Q";
             else if()
-                return "R";*/
-                else if(!firstFingerIsOpen && !secondFingerIsOpen && !thirdFingerIsOpen &&
-                        !fourthFingerIsOpen && !thumbIsOpen &&
-                        landmarkList.get(4).getX() >= landmarkList.get(5).getX())
+                return "R";
+            else if()
                     return "S";
-            /*else if()
+            else if()
                 return "T";
             else if()
                 return "U";
@@ -396,14 +404,13 @@ public class MediaPipeActivity extends BasicActivity {
             }
 
             else {
-                String info = "thumbIsOpen " + thumbIsOpen + "firstFingerIsOpen" + firstFingerIsOpen
-                        + "secondFingerIsOpen" + secondFingerIsOpen +
-                        "thirdFingerIsOpen" + thirdFingerIsOpen + "fourthFingerIsOpen" + fourthFingerIsOpen;
+                String info = "thumbIsOpen " + thumbIsOpen + "firstFingerIsOpen" + indexStraightUp
+                        + "secondFingerIsOpen" + middleStraightUp +
+                        "thirdFingerIsOpen" + ringStraightUp + "fourthFingerIsOpen" + pinkyStraightUp;
                 Log.d(TAG, "handGestureCalculator: == " + info);
-                return "no gesture";
             }
         }
-        return "___";
+        return "no gesture";
     }
 
     /**
