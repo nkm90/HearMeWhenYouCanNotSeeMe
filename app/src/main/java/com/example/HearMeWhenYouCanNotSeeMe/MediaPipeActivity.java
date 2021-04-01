@@ -172,6 +172,8 @@ public class MediaPipeActivity extends BasicActivity {
         boolean pinkyStraightDown = false;
         boolean thumbIsOpen = false;
         boolean thumbIsBend = false;
+        boolean palmIsVertical = false;
+        boolean palmIsInclinated = false;
 
         for (NormalizedLandmarkList landmarks : multiHandLandmarks) {
             List<NormalizedLandmark> landmarkList = landmarks.getLandmarkList();
@@ -239,24 +241,105 @@ public class MediaPipeActivity extends BasicActivity {
             /*THUMB */
             pseudoFixKeyPoint = landmarkList.get(4).getX();
             if (getEuclideanDistanceAB(pseudoFixKeyPoint,landmarkList.get(4).getY(), landmarkList.get(9).getX(), landmarkList.get(9).getY()) <=
-            getEuclideanDistanceAB(pseudoFixKeyPoint,landmarkList.get(4).getY(), landmarkList.get(2).getX(), landmarkList.get(2).getY())){
+            getEuclideanDistanceAB(pseudoFixKeyPoint,landmarkList.get(4).getY(), landmarkList.get(2).getX(), landmarkList.get(2).getY()) &&
+                    landmarkList.get(4).getY() >= landmarkList.get(3).getY()){
                 thumbIsBend = true;
             }else {
                 thumbIsOpen = true;
             }
 
             /*3rd CONDITION
-            * Setting state position when a finger is completely straight open*/
-
+            * In post to generate a possible split between gestures, made with palm facing front or
+            * other kind of rotations. By checking the position of three static points and their
+            * relative position to the others. The three static join selected for this are 0, 2, 17*/
+            if (landmarkList.get(0).getY() > landmarkList.get(2).getY() && landmarkList.get(2).getY() > landmarkList.get(17).getY()){
+                palmIsVertical = true;
+            }else if (landmarkList.get(0).getY() > landmarkList.get(17).getY() &&
+                    landmarkList.get(17).getY() >= landmarkList.get(2).getY())
+                palmIsInclinated = true;
 
             // Hand gesture recognition conditions for each letter
             if (isRight){
-                if (indexStraightDown && middleStraightDown && ringStraightDown && pinkyStraightDown && thumbIsOpen){
-                    return "A";
+                if (palmIsVertical){
+                    if (indexStraightDown && middleStraightDown && ringStraightDown &&
+                            pinkyStraightDown && thumbIsOpen && arePointsNear(landmarkList.get(4), landmarkList.get(6)) &&
+                            landmarkList.get(4).getX() < landmarkList.get(6).getX())
+                        return "A";
+                    else if(thumbIsBend && indexStraightUp && middleStraightUp && ringStraightUp && pinkyStraightUp)
+                        return "B";
+                    else if (thumbIsBend && landmarkList.get(8).getY() < landmarkList.get(4).getY() &&
+                            landmarkList.get(12).getY() < landmarkList.get(4).getY() &&
+                            landmarkList.get(16).getY() < landmarkList.get(4).getY() &&
+                            landmarkList.get(20).getY() < landmarkList.get(4).getY() &&
+                            landmarkList.get(8).getY() >= landmarkList.get(5).getY() &&
+                            landmarkList.get(12).getY() >= landmarkList.get(9).getY() &&
+                            landmarkList.get(16).getY() >= landmarkList.get(13).getY() &&
+                            landmarkList.get(20).getY() >= landmarkList.get(17).getY())
+                        return "E";//Needs correction
+                    else if (middleStraightUp && ringStraightUp && pinkyStraightUp && thumbIsOpen &&
+                            !indexStraightUp && arePointsNear(landmarkList.get(8), landmarkList.get(4)))
+                        return "F";
+                    else if (landmarkList.get(4).getX() == landmarkList.get(7).getX() &&
+                            indexStraightDown && middleStraightDown && ringStraightDown && pinkyStraightUp)
+                        return "I";
+                    else if(thumbIsOpen && landmarkList.get(4).getX() >= landmarkList.get(5).getX() &&
+                            landmarkList.get(4).getX() <= landmarkList.get(9).getX() &&
+                            indexStraightUp && middleStraightUp && ringStraightDown && pinkyStraightDown &&
+                            getEuclideanDistanceAB(landmarkList.get(8).getX(), landmarkList.get(8).getY(), landmarkList.get(12).getX(), landmarkList.get(12).getY()) >
+                                    getEuclideanDistanceAB(landmarkList.get(5).getX(), landmarkList.get(5).getY(), landmarkList.get(9).getX(), landmarkList.get(9).getY()))
+                        return "K";
+                    else if(thumbIsOpen && landmarkList.get(4).getX() < landmarkList.get(3).getX() &&
+                            landmarkList.get(4).getY() >= landmarkList.get(3).getY() && indexStraightUp && middleStraightDown && ringStraightDown && pinkyStraightDown)
+                        return "L";
+                    else if(indexStraightDown && landmarkList.get(8).getY() >= landmarkList.get(2).getY() &&
+                            middleStraightDown && landmarkList.get(12).getY() >= landmarkList.get(2).getY() &&
+                            ringStraightDown && landmarkList.get(16).getY() >= landmarkList.get(2).getY() &&
+                            landmarkList.get(16).getY() == landmarkList.get(19).getY() && pinkyStraightDown)
+                        return "M";//letter m needs corrections as it misunderstand A
+                    else if(indexStraightDown && landmarkList.get(8).getY() >= landmarkList.get(2).getY() &&
+                            middleStraightDown && landmarkList.get(12).getY() >= landmarkList.get(2).getY() &&
+                            ringStraightDown && landmarkList.get(16).getY() > landmarkList.get(12).getY() &&
+                            landmarkList.get(16).getX() >= landmarkList.get(12).getX() &&pinkyStraightDown)
+                        return "N";//letter n needs correction
+                    else if(thumbIsBend && indexStraightUp && landmarkList.get(8).getX() >= landmarkList.get(12).getX() &&
+                            middleStraightUp && ringStraightDown && landmarkList.get(4).getX() >= landmarkList.get(15).getX() &&
+                            pinkyStraightDown)
+                        return "R";// some correction needed for R
+                    else if(thumbIsBend && indexStraightDown && middleStraightDown && ringStraightDown &&
+                            pinkyStraightDown && landmarkList.get(8).getY() <= landmarkList.get(2).getY() &&
+                            landmarkList.get(12).getY() <= landmarkList.get(2).getY() &&
+                            landmarkList.get(16).getY() <= landmarkList.get(2).getY() &&
+                            landmarkList.get(20).getY() <= landmarkList.get(2).getY() &&
+                            landmarkList.get(4).getX() > landmarkList.get(11).getX())
+                        return "S";/* not working
+                    else if()
+                        return "T";
+                    else if()
+                        return "U";
+                    else if()
+                        return "V";
+                    else if()
+                        return "W";
+                    else if()
+                        return "X";
+                    else if()
+                        return "Y";
+                    else if()
+                        return "Z";*/
                 }
-                else if(thumbIsBend &&
-                        indexStraightUp && middleStraightUp && ringStraightUp && pinkyStraightUp)
-                    return "B";
+                else if (palmIsInclinated){
+                    if (thumbIsOpen && indexStraightUp && middleStraightDown && ringStraightDown &&
+                            pinkyStraightDown && landmarkList.get(8).getX() >= landmarkList.get(13).getX())
+                        return "G"; //Needs a bit more correction as the thumb needs to be close to index
+                    else if (thumbIsBend && ringStraightDown && pinkyStraightDown && indexStraightUp &&
+                            middleStraightUp && getEuclideanDistanceAB(landmarkList.get(8).getX(), landmarkList.get(8).getY(), landmarkList.get(12).getX(), landmarkList.get(12).getY()) ==
+                            getEuclideanDistanceAB(landmarkList.get(6).getX(), landmarkList.get(6).getY(), landmarkList.get(10).getX(), landmarkList.get(10).getY()))
+                        return "H";//Not working
+                    /*else if()
+                        return "J";
+                    */
+                }
+
                 else if (thumbIsOpen && landmarkList.get(8).getX() <= landmarkList.get(4).getX() &&
                         arePointsNear(landmarkList.get(8), landmarkList.get(12)) &&
                         arePointsNear(landmarkList.get(12), landmarkList.get(16)) &&
@@ -268,64 +351,27 @@ public class MediaPipeActivity extends BasicActivity {
                         arePointsNear(landmarkList.get(12), landmarkList.get(16)) &&
                         arePointsNear(landmarkList.get(12), landmarkList.get(20)))
                     return "D";
-                else if (thumbIsBend && landmarkList.get(8).getY() < landmarkList.get(4).getY() &&
-                        landmarkList.get(12).getY() < landmarkList.get(4).getY() &&
-                        landmarkList.get(16).getY() < landmarkList.get(4).getY() &&
-                        landmarkList.get(20).getY() < landmarkList.get(4).getY() &&
-                        landmarkList.get(8).getY() >= landmarkList.get(5).getY() &&
-                        landmarkList.get(12).getY() >= landmarkList.get(9).getY() &&
-                        landmarkList.get(16).getY() >= landmarkList.get(13).getY() &&
-                        landmarkList.get(20).getY() >= landmarkList.get(17).getY())
-                    return "E";//Needs correction
-                else if (middleStraightUp && ringStraightUp && pinkyStraightUp && thumbIsOpen &&
-                        !indexStraightUp && arePointsNear(landmarkList.get(8), landmarkList.get(4)))
-                    return "F";
-                else if (thumbIsOpen && indexStraightUp && middleStraightDown && ringStraightDown &&
-                        pinkyStraightDown && landmarkList.get(8).getX() >= landmarkList.get(13).getX())
-                    return "G"; //Needs a bit more correction as the thumb needs to be close to index
-                else if (thumbIsBend && ringStraightDown && pinkyStraightDown && indexStraightUp &&
-                        middleStraightUp && getEuclideanDistanceAB(landmarkList.get(8).getX(), landmarkList.get(8).getY(), landmarkList.get(12).getX(), landmarkList.get(12).getY()) ==
-                        getEuclideanDistanceAB(landmarkList.get(6).getX(), landmarkList.get(6).getY(), landmarkList.get(10).getX(), landmarkList.get(10).getY()))
-                    return "H";//Not working
-                //else if (thumbIsBend && )
+
+
+
+                else if (palmIsInclinated)
+                    return "Inclinated";
+                else if (palmIsVertical)
+                    return "Vertical";
 
             /*
             else if()
                 return "I";
-            else if()
-                return "J";
-            else if()
-                return "K";
-            else if()
-                return "L";
-            else if()
-                return "M";
-            else if()
-                return "N";
+
+
             else if()
                 return "O";
             else if()
                 return "P";
             else if()
                 return "Q";
-            else if()
-                return "R";
-            else if()
-                    return "S";
-            else if()
-                return "T";
-            else if()
-                return "U";
-            else if()
-                return "V";
-            else if()
-                return "W";
-            else if()
-                return "X";
-            else if()
-                return "Y";
-            else if()
-                return "Z";
+
+
             else if()
                 return "SPACE";*/
             }else if (isLeft){
