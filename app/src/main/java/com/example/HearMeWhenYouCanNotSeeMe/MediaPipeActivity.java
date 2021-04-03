@@ -239,10 +239,8 @@ public class MediaPipeActivity extends BasicActivity {
                 pinkyStraightDown = true;
             }
             /*THUMB */
-            pseudoFixKeyPoint = landmarkList.get(4).getX();
-            if (getEuclideanDistanceAB(pseudoFixKeyPoint,landmarkList.get(4).getY(), landmarkList.get(9).getX(), landmarkList.get(9).getY()) <=
-            getEuclideanDistanceAB(pseudoFixKeyPoint,landmarkList.get(4).getY(), landmarkList.get(2).getX(), landmarkList.get(2).getY()) &&
-                    landmarkList.get(4).getY() >= landmarkList.get(3).getY()){
+            if (getEuclideanDistanceAB(landmarkList.get(4).getX(),landmarkList.get(4).getY(), landmarkList.get(9).getX(), landmarkList.get(9).getY())
+                    < getEuclideanDistanceAB(landmarkList.get(3).getX(),landmarkList.get(3).getY(), landmarkList.get(9).getX(), landmarkList.get(9).getY())){
                 thumbIsBend = true;
             }else {
                 thumbIsOpen = true;
