@@ -84,7 +84,9 @@ public class MediaPipeActivity extends BasicActivity {
                         public void run() {
                             String letter = handGestureCalculator(multiHandLandmarks);
                             gesture.setText(letter);
-                            if (timestamp + 2000 < System.currentTimeMillis() && !letter.equals("No hand detected") && !letter.equals("no gesture")){
+                            if (timestamp + 2000 < System.currentTimeMillis()
+                                    && !letter.equals("No hand detected")
+                                    && !letter.equals("no gesture")){
                                 addToSentence(letter);
                                 timestamp = System.currentTimeMillis();
                             }
@@ -196,7 +198,8 @@ public class MediaPipeActivity extends BasicActivity {
             }else if (pseudoFixKeyPoint < landmarkList.get(17).getX()) {
                 isRight = true;
             }
-            Log.d(TAG, "pseudoFixKeyPoint == " + pseudoFixKeyPoint + "\nlandmarkList.get(2).getX() == " + landmarkList.get(2).getX()
+            Log.d(TAG, "pseudoFixKeyPoint == " + pseudoFixKeyPoint
+                    + "\nlandmarkList.get(2).getX() == " + landmarkList.get(2).getX()
                     + "\nlandmarkList.get(17).getX() = " + landmarkList.get(17).getX());
 
             /*2nd CONDITION
@@ -207,8 +210,8 @@ public class MediaPipeActivity extends BasicActivity {
                     && landmarkList.get(7).getY() < landmarkList.get(6).getY()
                     && landmarkList.get(6).getY() < landmarkList.get(5).getY()){
                 indexStraightUp = true;
-            }else if (getEuclideanDistanceAB(landmarkList.get(8).getX(),landmarkList.get(8).getY(), landmarkList.get(0).getX(), landmarkList.get(0).getY()) <
-                    getEuclideanDistanceAB(landmarkList.get(5).getX(),landmarkList.get(5).getY(), landmarkList.get(0).getX(), landmarkList.get(0).getY())){
+            }else if (getEuclideanDistanceAB(landmarkList.get(8).getX(),landmarkList.get(8).getY(), landmarkList.get(0).getX(), landmarkList.get(0).getY())
+                    < getEuclideanDistanceAB(landmarkList.get(5).getX(),landmarkList.get(5).getY(), landmarkList.get(0).getX(), landmarkList.get(0).getY())){
                 indexStraightDown = true;
             }
             /*MIDDLE_FINGER */
@@ -250,7 +253,8 @@ public class MediaPipeActivity extends BasicActivity {
             * In post to generate a possible split between gestures, made with palm facing front or
             * other kind of rotations. By checking the position of three static points and their
             * relative position to the others. The three static join selected for this are 0, 2, 17*/
-            if (landmarkList.get(0).getY() > landmarkList.get(2).getY() && landmarkList.get(2).getY() > landmarkList.get(17).getY()){
+            if (landmarkList.get(0).getY() > landmarkList.get(2).getY()
+                    && landmarkList.get(2).getY() > landmarkList.get(17).getY()){
                 palmIsVertical = true;
             }else if (landmarkList.get(0).getY() > landmarkList.get(17).getY() &&
                     landmarkList.get(17).getY() >= landmarkList.get(2).getY())
@@ -458,8 +462,10 @@ public class MediaPipeActivity extends BasicActivity {
         result.setText(sentence);
     }
 
-    private boolean arePointsNear(LandmarkProto.NormalizedLandmark point1, LandmarkProto.NormalizedLandmark point2) {
-        double distance = getEuclideanDistanceAB(point1.getX(), point1.getY(), point2.getX(), point2.getY());
+    private boolean arePointsNear(LandmarkProto.NormalizedLandmark point1,
+                                  LandmarkProto.NormalizedLandmark point2) {
+        double distance = getEuclideanDistanceAB(point1.getX(),
+                point1.getY(), point2.getX(), point2.getY());
         return distance < 0.1;
     }
 
@@ -473,7 +479,8 @@ public class MediaPipeActivity extends BasicActivity {
      * @param b_y Value of Y for the given position of point B
      * @return Euclidean distance result
      */
-    private double getEuclideanDistanceAB(double a_x, double a_y, double b_x, double b_y) {
+    private double getEuclideanDistanceAB(double a_x, double a_y,
+                                          double b_x, double b_y) {
         double dist = Math.pow(a_x - b_x, 2) + Math.pow(a_y - b_y, 2);
         return Math.sqrt(dist);
     }

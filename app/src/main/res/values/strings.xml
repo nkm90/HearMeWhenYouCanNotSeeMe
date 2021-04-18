@@ -3,17 +3,17 @@
     <string name="no_camera_access">Please grant camera permissions.</string>
 
     //MainActivity strings
-    <string name="launchMP">Launch Mediapipe</string>
+    <string name="launchMP">Start</string>
     <string name="changeLang">Change Language</string>
-    <string name="txtIntro">App intro</string>
+    <string name="txtIntro">This App has been produced to help deaf-mute people to communicate using sign language</string>
 
     //MenuActivity strings
     <string name="signDetection">Sign recognition</string>
     <string name="speakIn">Voice to Text</string>
-    <string name="out_message">Run MP for recognition</string>
-    <string name="speakOut">Text to voice</string>
+    <string name="out_message">Press Sign Recognition  button to translate sign language into text, Voice Recognition button to translate speech into text, or you can write your own text here.</string>
     <string name="lblPitch">Pitch</string>
     <string name="lblSpeed">Speed</string>
     <string name="hintInput">Type your text in</string>
+    <string name="speakOut">Read it loud</string>
 
 </resources>
