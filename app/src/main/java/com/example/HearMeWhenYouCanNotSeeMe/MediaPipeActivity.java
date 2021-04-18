@@ -173,7 +173,7 @@ public class MediaPipeActivity extends BasicActivity {
         boolean thumbIsOpen = false;
         boolean thumbIsBend = false;
         boolean palmIsVertical = false;
-        boolean palmIsInclinated = false;
+        boolean palmIsInclined = false;
 
         for (NormalizedLandmarkList landmarks : multiHandLandmarks) {
             List<NormalizedLandmark> landmarkList = landmarks.getLandmarkList();
@@ -254,7 +254,7 @@ public class MediaPipeActivity extends BasicActivity {
                 palmIsVertical = true;
             }else if (landmarkList.get(0).getY() > landmarkList.get(17).getY() &&
                     landmarkList.get(17).getY() >= landmarkList.get(2).getY())
-                palmIsInclinated = true;
+                palmIsInclined = true;
 
             // Hand gesture recognition conditions for each letter
             if (isRight){
@@ -325,7 +325,7 @@ public class MediaPipeActivity extends BasicActivity {
                     else if()
                         return "Z";*/
                 }
-                else if (palmIsInclinated){
+                else if (palmIsInclined){
                     if (thumbIsOpen && indexStraightUp && middleStraightDown && ringStraightDown &&
                             pinkyStraightDown && landmarkList.get(8).getX() >= landmarkList.get(13).getX())
                         return "G"; //Needs a bit more correction as the thumb needs to be close to index
@@ -352,7 +352,7 @@ public class MediaPipeActivity extends BasicActivity {
 
 
 
-                else if (palmIsInclinated)
+                else if (palmIsInclined)
                     return "Inclinated";
                 else if (palmIsVertical)
                     return "Vertical";
