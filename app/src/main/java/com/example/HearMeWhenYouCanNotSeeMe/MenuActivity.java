@@ -41,9 +41,8 @@ public class MenuActivity extends AppCompatActivity {
         String actualLanguage = getLanguage();
 
         /*
-          mTTS is a method that converts text to speech. It will be initialised taking the actual
-          language tag from the app, to provide better user experience and reduce pronunciation
-          problems.
+          mTTS is initialised with the TTS method taking the actual language tag from the app,
+          to provide better user experience.
           */
         mTTS = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
@@ -158,6 +157,7 @@ public class MenuActivity extends AppCompatActivity {
             if (!message.equals("Back")){
                 mEditText.setText(message);
             }/*else {
+                //handling when back was pressed, do nothing
                 mEditText.setText("Back is pressed");
             }*/
         }else if (requestCode==2){
