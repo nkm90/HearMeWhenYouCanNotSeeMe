@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.example.HearMeWhenYouCanNotSeeMe;
+package com.nkm90.HearMeWhenYouCanNotSeeMe;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -21,7 +21,7 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.example.HearMeWhenYouCanNotSeeMe.basic.BasicActivity;
+import com.nkm90.HearMeWhenYouCanNotSeeMe.basic.BasicActivity;
 import com.google.mediapipe.formats.proto.LandmarkProto;
 import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmark;
 import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmarkList;

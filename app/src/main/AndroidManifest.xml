@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.HearMeWhenYouCanNotSeeMe">
+    package="com.nkm90.HearMeWhenYouCanNotSeeMe">
     <!-- For using the camera -->
     <uses-permission android:name="android.permission.CAMERA" />
 
@@ -14,15 +14,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MenuActivity"></activity>
-        <activity android:name=".MainActivity">
+        <activity android:name="com.nkm90.HearMeWhenYouCanNotSeeMe.MenuActivity"></activity>
+        <activity android:name="com.nkm90.HearMeWhenYouCanNotSeeMe.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MediaPipeActivity"></activity>
+        <activity android:name="com.nkm90.HearMeWhenYouCanNotSeeMe.MediaPipeActivity"></activity>
 
         <meta-data
             android:name="cameraFacingFront"

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.example.HearMeWhenYouCanNotSeeMe.basic;
+package com.nkm90.HearMeWhenYouCanNotSeeMe.basic;
 
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -28,7 +28,7 @@ import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.HearMeWhenYouCanNotSeeMe.R;
+import com.nkm90.HearMeWhenYouCanNotSeeMe.R;
 import com.google.mediapipe.components.CameraHelper;
 import com.google.mediapipe.components.CameraXPreviewHelper;
 import com.google.mediapipe.components.ExternalTextureConverter;
