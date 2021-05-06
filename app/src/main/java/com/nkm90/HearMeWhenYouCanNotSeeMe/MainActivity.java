@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -87,5 +88,49 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("Settings", Activity.MODE_PRIVATE);
         String language = prefs.getString("My_Lang", "");
         setLocale(language);
+    }
+    /*LIFECYCLE INTEGRATION
+     * With the aim of keeping track of the different states that this activity is changing.
+     * I just basically logs a message to the console as no other function is needed in this case*/
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        Log.d("ActivityLifeCycle", "Main Activity - onStart");
+    }
+
+    @Override
+    protected void onRestart()
+    {
+        Log.d("ActivityLifeCycle", "Main Activity - onRestart");
+        super.onRestart();
+    }
+
+    @Override
+    protected void onResume()
+    {
+        Log.d("ActivityLifeCycle", "Main Activity - onResume");
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause()
+    {
+        Log.d("ActivityLifeCycle", "Main Activity - onPause");
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop()
+    {
+        Log.d("ActivityLifeCycle", "Main Activity - onStop");
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        Log.d("ActivityLifeCycle", "Main Activity - onDestroy");
+        super.onDestroy();
     }
 }

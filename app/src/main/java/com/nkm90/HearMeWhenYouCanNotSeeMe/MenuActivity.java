@@ -198,12 +198,50 @@ public class MenuActivity extends AppCompatActivity {
         return prefs.getString("My_Lang", "");
     }
 
+    /*LIFECYCLE INTEGRATION
+     * With the aim of keeping track of the different states that this activity is changing.
+     * I just basically logs a message to the console as no other function is needed in this case*/
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        Log.d("ActivityLifeCycle", "Menu Activity - onStart");
+    }
+
+    @Override
+    protected void onRestart()
+    {
+        Log.d("ActivityLifeCycle", "Menu Activity - onRestart");
+        super.onRestart();
+    }
+
+    @Override
+    protected void onResume()
+    {
+        Log.d("ActivityLifeCycle", "Menu Activity - onResume");
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause()
+    {
+        Log.d("ActivityLifeCycle", "Menu Activity - onPause");
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop()
+    {
+        Log.d("ActivityLifeCycle", "Menu Activity - onStop");
+        super.onStop();
+    }
     @Override
     protected void onDestroy() {
         if (mTTS != null){
             mTTS.stop();
             mTTS.shutdown();
         }
+        Log.d("ActivityLifeCycle", "Menu Activity - onDestroy");
         super.onDestroy();
     }
 }
