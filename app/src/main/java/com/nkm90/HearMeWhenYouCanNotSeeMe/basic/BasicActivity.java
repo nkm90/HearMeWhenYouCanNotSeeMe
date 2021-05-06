@@ -48,6 +48,7 @@ public class BasicActivity extends AppCompatActivity {
   // top-left corner.
   // NOTE: use "flipFramesVertically" in manifest metadata to override this behavior.
   private static final boolean FLIP_FRAMES_VERTICALLY = true;
+  boolean first = true;
 
   static {
     // Load all native libraries needed by the app.
@@ -115,12 +116,37 @@ public class BasicActivity extends AppCompatActivity {
     PermissionHelper.checkAndRequestCameraPermissions(this);
   }
 
+  /*LIFECYCLE INTEGRATION
+   * With the aim of keeping track of the different states that MediaPipe activity is changing.
+   * Logging a message to the console every time a new state is reached, helping to keep track of
+   * the lifecycle for the app*/
+  @Override
+  protected void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    Log.d("ActivityLifeCycle", "MediaPipe Activity - SaveInstanceState");
+  }
+
+  @Override
+  protected void onStart()
+  {
+    super.onStart();
+    Log.d("ActivityLifeCycle", "MediaPipe Activity - Start");
+  }
+
+  @Override
+  protected void onRestart()
+  {
+    Log.d("ActivityLifeCycle", "MediaPipe Activity - Restart");
+    super.onRestart();
+  }
+
   @Override
   protected void onResume() {
+    Log.d("ActivityLifeCycle", "MediaPipe Activity - Resume");
     super.onResume();
     converter = new ExternalTextureConverter(eglManager.getContext());
     converter.setFlipY(
-        applicationInfo.metaData.getBoolean("flipFramesVertically", FLIP_FRAMES_VERTICALLY));
+            applicationInfo.metaData.getBoolean("flipFramesVertically", FLIP_FRAMES_VERTICALLY));
     converter.setConsumer(processor);
     if (PermissionHelper.cameraPermissionsGranted(this)) {
       startCamera();
@@ -129,8 +155,23 @@ public class BasicActivity extends AppCompatActivity {
 
   @Override
   protected void onPause() {
+    Log.d("ActivityLifeCycle", "MediaPipe Activity - Pause");
     super.onPause();
-    converter.close();
+    //converter.close();
+  }
+
+  @Override
+  protected void onStop()
+  {
+    Log.d("ActivityLifeCycle", "MediaPipe Activity - Stop");
+    super.onStop();
+  }
+
+  @Override
+  protected void onDestroy()
+  {
+    Log.d("ActivityLifeCycle", "MediaPipe Activity - Destroy");
+    super.onDestroy();
   }
 
   @Override
@@ -161,8 +202,11 @@ public class BasicActivity extends AppCompatActivity {
         applicationInfo.metaData.getBoolean("cameraFacingFront", false)
             ? CameraHelper.CameraFacing.FRONT
             : CameraHelper.CameraFacing.BACK;
-    cameraHelper.startCamera(
-        this, cameraFacing, /*surfaceTexture=*/ null, cameraTargetResolution());
+    if (first)
+    {
+      first = false;
+      cameraHelper.startCamera(this, cameraFacing, /*surfaceTexture=*/ null, cameraTargetResolution());
+    }
   }
 
   protected Size computeViewSize(int width, int height) {
