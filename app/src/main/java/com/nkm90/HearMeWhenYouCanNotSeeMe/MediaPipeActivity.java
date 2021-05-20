@@ -259,15 +259,7 @@ public class MediaPipeActivity extends BasicActivity {
             // Hand gesture recognition conditions for each letter
             if (isRight){
                 if (palmIsVertical){
-                    if(landmarkList.get(4).getY() < landmarkList.get(3).getY()
-                            && landmarkList.get(3).getY() < landmarkList.get(2).getY()
-                            && landmarkList.get(8).getY() < landmarkList.get(5).getY()
-                            && landmarkList.get(12).getY() < landmarkList.get(9).getY()
-                            && landmarkList.get(16).getY() < landmarkList.get(13).getY()
-                            && landmarkList.get(20).getY() < landmarkList.get(17).getY()
-                            && landmarkList.get(17).getY() >= landmarkList.get(2).getY())
-                        return "SPACE";
-                    else if (indexStraightDown && middleStraightDown && ringStraightDown
+                    if (indexStraightDown && middleStraightDown && ringStraightDown
                             && pinkyStraightDown && thumbIsOpen
                             && arePointsNear(landmarkList.get(4), landmarkList.get(6))
                             && landmarkList.get(4).getX() < landmarkList.get(6).getX())
@@ -277,8 +269,11 @@ public class MediaPipeActivity extends BasicActivity {
                         return "B";
                     else if (thumbIsOpen && !arePointsNear(landmarkList.get(4), landmarkList.get(8))
                             && landmarkList.get(4).getX() >= landmarkList.get(8).getX()
+                            && !arePointsNear(landmarkList.get(4), landmarkList.get(12))
                             && arePointsNear(landmarkList.get(8), landmarkList.get(12))
                             && arePointsNear(landmarkList.get(12), landmarkList.get(16))
+                            && !arePointsNear(landmarkList.get(4), landmarkList.get(16))
+                            && !arePointsNear(landmarkList.get(4), landmarkList.get(20))
                             && arePointsNear(landmarkList.get(16), landmarkList.get(20)))
                         return "C";
                     else if (indexStraightUp && thumbIsOpen &&
@@ -300,7 +295,8 @@ public class MediaPipeActivity extends BasicActivity {
                             && thumbIsOpen && !indexStraightUp
                             && arePointsNear(landmarkList.get(8), landmarkList.get(4)))
                         return "F";
-                    else if (landmarkList.get(4).getX() == landmarkList.get(7).getX() &&
+                    else if (arePointsNear(landmarkList.get(4), landmarkList.get(6))
+                            && landmarkList.get(4).getX() < landmarkList.get(6).getX() &&
                             indexStraightDown && middleStraightDown && ringStraightDown
                             && pinkyStraightUp)
                         return "I";
@@ -314,15 +310,21 @@ public class MediaPipeActivity extends BasicActivity {
                             landmarkList.get(4).getY() >= landmarkList.get(3).getY()
                             && indexStraightUp && middleStraightDown && ringStraightDown && pinkyStraightDown)
                         return "L";
-                    else if(indexStraightDown && landmarkList.get(8).getY() >= landmarkList.get(2).getY() &&
-                            middleStraightDown && landmarkList.get(12).getY() >= landmarkList.get(2).getY() &&
-                            ringStraightDown && landmarkList.get(16).getY() >= landmarkList.get(2).getY() &&
-                            landmarkList.get(16).getY() == landmarkList.get(19).getY() && pinkyStraightDown)
+                    else if(landmarkList.get(8).getY() > landmarkList.get(5).getY() &&
+                            landmarkList.get(12).getY() > landmarkList.get(9).getY() &&
+                            landmarkList.get(16).getY() > landmarkList.get(13).getY() &&
+                            landmarkList.get(0).getY() < landmarkList.get(4).getY() &&
+                            landmarkList.get(0).getY() < landmarkList.get(20).getY())
                         return "M";
-                    else if(indexStraightDown && landmarkList.get(8).getY() >= landmarkList.get(2).getY() &&
+                    else if(/*indexStraightDown && landmarkList.get(8).getY() >= landmarkList.get(2).getY() &&
                             middleStraightDown && landmarkList.get(12).getY() >= landmarkList.get(2).getY() &&
                             ringStraightDown && landmarkList.get(16).getY() > landmarkList.get(12).getY() &&
-                            landmarkList.get(16).getX() >= landmarkList.get(12).getX() &&pinkyStraightDown)
+                            landmarkList.get(16).getX() >= landmarkList.get(12).getX() &&pinkyStraightDown*/
+                            landmarkList.get(8).getY() > landmarkList.get(5).getY() &&
+                            landmarkList.get(12).getY() > landmarkList.get(9).getY() &&
+                            landmarkList.get(16).getY() < landmarkList.get(13).getY() &&
+                            landmarkList.get(0).getY() < landmarkList.get(4).getY() &&
+                            landmarkList.get(0).getY() < landmarkList.get(20).getY())
                         return "N";
                     else if(thumbIsOpen && arePointsNear(landmarkList.get(4), landmarkList.get(8))
                             && arePointsNear(landmarkList.get(8), landmarkList.get(12))
@@ -335,7 +337,8 @@ public class MediaPipeActivity extends BasicActivity {
                             && landmarkList.get(4).getX() >= landmarkList.get(15).getX()
                             && pinkyStraightDown)
                         return "R";
-                    else if(thumbIsBend && landmarkList.get(8).getY() >= landmarkList.get(5).getY() &&
+                    else if(thumbIsBend && indexStraightDown && middleStraightDown && ringStraightDown && pinkyStraightDown &&
+                            landmarkList.get(8).getY() >= landmarkList.get(5).getY() &&
                             landmarkList.get(7).getY() >= landmarkList.get(5).getY() &&
                             landmarkList.get(12).getY() >= landmarkList.get(9).getY() &&
                             landmarkList.get(11).getY() >= landmarkList.get(9).getY() &&
@@ -343,7 +346,8 @@ public class MediaPipeActivity extends BasicActivity {
                             landmarkList.get(15).getY() >= landmarkList.get(13).getY() &&
                             landmarkList.get(20).getY() >= landmarkList.get(17).getY() &&
                             landmarkList.get(19).getY() >= landmarkList.get(17).getY() &&
-                            landmarkList.get(4).getX() > landmarkList.get(11).getX())
+                            landmarkList.get(4).getX() > landmarkList.get(7).getX() &&
+                            landmarkList.get(4).getY() <= landmarkList.get(11).getY())
                         return "S";
                     else if(thumbIsOpen && indexStraightDown && middleStraightDown && ringStraightDown
                             && pinkyStraightDown && landmarkList.get(4).getX() > landmarkList.get(6).getX()
@@ -376,7 +380,7 @@ public class MediaPipeActivity extends BasicActivity {
                     else if(thumbIsOpen && indexStraightDown && middleStraightDown
                             && ringStraightDown && pinkyStraightUp)
                         return "Y";
-                    else if(landmarkList.get(8).getY() < landmarkList.get(5).getY()
+                    else if(thumbIsOpen && landmarkList.get(8).getY() < landmarkList.get(5).getY()
                             && landmarkList.get(8).getX() < landmarkList.get(5).getX()
                             && landmarkList.get(4).getY() >= landmarkList.get(3).getY()
                             && landmarkList.get(4).getX() >= landmarkList.get(9).getX()
@@ -386,16 +390,24 @@ public class MediaPipeActivity extends BasicActivity {
                         return "Z";
                 }
                 else if (palmIsInclined){
-                    if (thumbIsOpen && indexStraightUp && middleStraightDown
+                    if(landmarkList.get(4).getY() < landmarkList.get(3).getY()
+                            && landmarkList.get(3).getY() < landmarkList.get(2).getY()
+                            && landmarkList.get(8).getY() < landmarkList.get(5).getY()
+                            && landmarkList.get(12).getY() < landmarkList.get(9).getY()
+                            && landmarkList.get(16).getY() < landmarkList.get(13).getY()
+                            && landmarkList.get(20).getY() < landmarkList.get(17).getY()
+                            && landmarkList.get(17).getY() >= landmarkList.get(2).getY())
+                        return "SPACE";
+                    else if (thumbIsOpen && indexStraightUp && middleStraightDown
                             && ringStraightDown && pinkyStraightDown
                             && landmarkList.get(8).getX() >= landmarkList.get(13).getX())
                         return "G";
                     else if (thumbIsBend && ringStraightDown && pinkyStraightDown
                             && indexStraightUp && middleStraightUp
-                            && getEuclideanDistanceAB(landmarkList.get(8).getX(), landmarkList.get(8).getY(),
+                            /*&& getEuclideanDistanceAB(landmarkList.get(8).getX(), landmarkList.get(8).getY(),
                             landmarkList.get(12).getX(), landmarkList.get(12).getY())
                             == getEuclideanDistanceAB(landmarkList.get(6).getX(), landmarkList.get(6).getY(),
-                            landmarkList.get(10).getX(), landmarkList.get(10).getY()))
+                            landmarkList.get(10).getX(), landmarkList.get(10).getY())*/)
                         return "H";
                     else if(thumbIsBend && indexStraightDown && middleStraightDown
                             && ringStraightDown && pinkyStraightUp)
